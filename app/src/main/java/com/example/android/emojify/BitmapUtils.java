@@ -35,6 +35,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+// https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
+// https://github.com/codepath/android_guides/wiki/Accessing-the-Camera-and-Stored-Media
+
 class BitmapUtils {
 
     private static final String FILE_PROVIDER_AUTHORITY = "com.example.android.fileprovider";
@@ -84,7 +87,7 @@ class BitmapUtils {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
                 Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = context.getExternalCacheDir();
+        File storageDir = context.getExternalCacheDir(); // temporary file storage
 
         return File.createTempFile(
                 imageFileName,  /* prefix */

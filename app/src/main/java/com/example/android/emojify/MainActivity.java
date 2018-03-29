@@ -21,6 +21,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -52,18 +53,26 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String FILE_PROVIDER_AUTHORITY = "com.example.android.fileprovider";
 
-    @BindView(R.id.image_view) ImageView mImageView;
+    @BindView(R.id.image_view)
+    ImageView mImageView;
 
-    @BindView(R.id.emojify_button) Button mEmojifyButton;
-    @BindView(R.id.share_button) FloatingActionButton mShareFab;
-    @BindView(R.id.save_button) FloatingActionButton mSaveFab;
-    @BindView(R.id.clear_button) FloatingActionButton mClearFab;
+    @BindView(R.id.emojify_button)
+    Button mEmojifyButton;
+    @BindView(R.id.share_button)
+    FloatingActionButton mShareFab;
+    @BindView(R.id.save_button)
+    FloatingActionButton mSaveFab;
+    @BindView(R.id.clear_button)
+    FloatingActionButton mClearFab;
 
-    @BindView(R.id.title_text_view) TextView mTitleTextView;
+    @BindView(R.id.title_text_view)
+    TextView mTitleTextView;
 
     private String mTempPhotoPath;
 
     private Bitmap mResultsBitmap;
+
+    ExifInterface exif;
 
 
     @Override
@@ -100,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
+                                           @NonNull int[] grantResults) {
         // Called when you request permission to read and write to external storage
         switch (requestCode) {
             case REQUEST_STORAGE_PERMISSION: {
@@ -161,6 +170,11 @@ public class MainActivity extends AppCompatActivity {
         // If the image capture activity was called and was successful
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             // Process the image and set it to the TextView
+            try {
+                exif = new ExifInterface(mTempPhotoPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             processAndSetImage();
         } else {
 
@@ -184,6 +198,9 @@ public class MainActivity extends AppCompatActivity {
         // Resample the saved image to fit the ImageView
         mResultsBitmap = BitmapUtils.resamplePic(this, mTempPhotoPath);
 
+        //Rotate
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        mResultsBitmap = ExifUtil.rotateBitmap(mResultsBitmap, orientation);
 
         // Detect the faces and overlay the appropriate emoji
         mResultsBitmap = Emojifier.detectFacesandOverlayEmoji(this, mResultsBitmap);
