@@ -66,7 +66,7 @@ public class Emojifier {
                 + "\nSmiling probability: " + smilingProbability);
 
         float EYE_BEING_OPEN_THRESHOLD = 0.5f;
-        float SMILE_THRESHOLD = 0.5f;
+        float SMILE_THRESHOLD = 0.2f;
 
         boolean smiling, leftEyeClosed, rightEyeClosed;
         Emoji emoji;
@@ -83,9 +83,9 @@ public class Emojifier {
         if (smiling) {
             if (leftEyeClosed && rightEyeClosed) {
                 emoji = Emoji.CLOSED_EYE_SMILING;
-            } else if (leftEyeClosed && !rightEyeClosed) {
+            } else if (leftEyeClosed) {
                 emoji = Emoji.LEFT_WINK;
-            } else if (rightEyeClosed && !leftEyeClosed) {
+            } else if (rightEyeClosed) {
                 emoji = Emoji.RIGHT_WINK;
             } else {
                 emoji = Emoji.SMILING;
@@ -94,9 +94,9 @@ public class Emojifier {
         } else {
             if (leftEyeClosed && rightEyeClosed) {
                 emoji = Emoji.CLOSED_EYE_FROWNING;
-            } else if (leftEyeClosed && !rightEyeClosed) {
+            } else if (leftEyeClosed) {
                 emoji = Emoji.LEFT_WINK_FROWNING;
-            } else if (rightEyeClosed && !leftEyeClosed) {
+            } else if (rightEyeClosed) {
                 emoji = Emoji.RIGHT_WINK_FROWNING;
             } else {
                 emoji = Emoji.FROWNING;
