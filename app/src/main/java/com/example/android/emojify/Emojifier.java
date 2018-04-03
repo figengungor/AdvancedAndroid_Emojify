@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.util.SparseArray;
-
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
@@ -48,22 +47,62 @@ public class Emojifier {
 
         //Log the rightEyeOpen, leftEyeOpen, smiling probability of faces
         for (int i = 0; i < faces.size(); i++) {
-            getClassification(faces.valueAt(i));
+            whichEmoji(faces.valueAt(i));
         }
 
         detector.release();
 
     }
 
-    private static void getClassification(Face face) {
+    private static void whichEmoji(Face face) {
 
         float leftEyeProbability = face.getIsLeftEyeOpenProbability();
         float rightEyeProbability = face.getIsRightEyeOpenProbability();
         float smilingProbability = face.getIsSmilingProbability();
 
-        Log.i(TAG, "getClassification for face: "
+        Log.i(TAG, "getProbabilities for face: "
                 + "\nLeft eye probability: " + leftEyeProbability
                 + "\nRight eye probability: " + rightEyeProbability
                 + "\nSmiling probability: " + smilingProbability);
+
+        float EYE_BEING_OPEN_THRESHOLD = 0.5f;
+        float SMILE_THRESHOLD = 0.5f;
+
+        boolean smiling, leftEyeClosed, rightEyeClosed;
+        Emoji emoji;
+
+        smiling = smilingProbability > SMILE_THRESHOLD;
+        leftEyeClosed = leftEyeProbability < EYE_BEING_OPEN_THRESHOLD;
+        rightEyeClosed = rightEyeProbability < EYE_BEING_OPEN_THRESHOLD;
+
+        Log.i(TAG, "Status: "
+                + "\nLeft eye closed: " + leftEyeClosed
+                + "\nRight eye closed: " + rightEyeClosed
+                + "\nSmiling: " + smiling);
+
+        if (smiling) {
+            if (leftEyeClosed && rightEyeClosed) {
+                emoji = Emoji.CLOSED_EYE_SMILING;
+            } else if (leftEyeClosed && !rightEyeClosed) {
+                emoji = Emoji.LEFT_WINK;
+            } else if (rightEyeClosed && !leftEyeClosed) {
+                emoji = Emoji.RIGHT_WINK;
+            } else {
+                emoji = Emoji.SMILING;
+            }
+
+        } else {
+            if (leftEyeClosed && rightEyeClosed) {
+                emoji = Emoji.CLOSED_EYE_FROWNING;
+            } else if (leftEyeClosed && !rightEyeClosed) {
+                emoji = Emoji.LEFT_WINK_FROWNING;
+            } else if (rightEyeClosed && !leftEyeClosed) {
+                emoji = Emoji.RIGHT_WINK_FROWNING;
+            } else {
+                emoji = Emoji.FROWNING;
+            }
+        }
+        Log.i(TAG, "whichEmoji: " + emoji);
+
     }
 }
