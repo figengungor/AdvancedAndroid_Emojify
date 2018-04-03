@@ -43,9 +43,27 @@ public class Emojifier {
         //The detector can be called synchronously with a frame to detect faces:
         SparseArray<Face> faces = detector.detect(frame);
 
-        Log.d(TAG, "Number of detected faces: " + faces.size());
+        //Log the number of detected faces
+        Log.i(TAG, "Number of detected faces: " + faces.size());
+
+        //Log the rightEyeOpen, leftEyeOpen, smiling probability of faces
+        for (int i = 0; i < faces.size(); i++) {
+            getClassification(faces.valueAt(i));
+        }
 
         detector.release();
 
+    }
+
+    private static void getClassification(Face face) {
+
+        float leftEyeProbability = face.getIsLeftEyeOpenProbability();
+        float rightEyeProbability = face.getIsRightEyeOpenProbability();
+        float smilingProbability = face.getIsSmilingProbability();
+
+        Log.i(TAG, "getClassification for face: "
+                + "\nLeft eye probability: " + leftEyeProbability
+                + "\nRight eye probability: " + rightEyeProbability
+                + "\nSmiling probability: " + smilingProbability);
     }
 }
