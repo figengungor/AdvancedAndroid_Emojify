@@ -12,6 +12,8 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
+import timber.log.Timber;
+
 /**
  * Created by figengungor on 4/2/2018.
  */
@@ -19,8 +21,6 @@ import com.google.android.gms.vision.face.FaceDetector;
 public class Emojifier {
 
     //https://developers.google.com/vision/android/detect-faces-tutorial
-
-    private static final String TAG = Emojifier.class.getSimpleName();
     private static final float EMOJI_SCALE_FACTOR = 0.8f;
 
     public static Bitmap detectFacesAndOverlayEmoji(Context context, Bitmap bitmap) {
@@ -48,7 +48,7 @@ public class Emojifier {
         SparseArray<Face> faces = detector.detect(frame);
 
         //Log the number of detected faces
-        Log.i(TAG, "Number of detected faces: " + faces.size());
+        Timber.d("Number of detected faces: " + faces.size());
 
         if(faces.size()<0){
             Toast.makeText(context, "No face detected!", Toast.LENGTH_SHORT).show();
@@ -112,7 +112,7 @@ public class Emojifier {
         float rightEyeProbability = face.getIsRightEyeOpenProbability();
         float smilingProbability = face.getIsSmilingProbability();
 
-        Log.i(TAG, "getProbabilities for face: "
+        Timber.d("getProbabilities for face: "
                 + "\nLeft eye probability: " + leftEyeProbability
                 + "\nRight eye probability: " + rightEyeProbability
                 + "\nSmiling probability: " + smilingProbability);
@@ -127,7 +127,7 @@ public class Emojifier {
         leftEyeClosed = leftEyeProbability < EYE_BEING_OPEN_THRESHOLD;
         rightEyeClosed = rightEyeProbability < EYE_BEING_OPEN_THRESHOLD;
 
-        Log.i(TAG, "Status: "
+        Timber.d("Status: "
                 + "\nLeft eye closed: " + leftEyeClosed
                 + "\nRight eye closed: " + rightEyeClosed
                 + "\nSmiling: " + smiling);
@@ -154,7 +154,7 @@ public class Emojifier {
                 emoji = Emoji.FROWNING;
             }
         }
-        Log.i(TAG, "whichEmoji: " + emoji);
+        Timber.d("whichEmoji: " + emoji);
 
         return emoji;
 
