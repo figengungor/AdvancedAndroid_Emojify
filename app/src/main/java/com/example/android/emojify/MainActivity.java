@@ -178,6 +178,13 @@ public class MainActivity extends AppCompatActivity {
         // Resample the saved image to fit the ImageView
         mResultsBitmap = BitmapUtils.resamplePic(this, mTempPhotoPath);
 
+        //Modify orientation
+        try {
+            mResultsBitmap = BitmapUtils.modifyOrientation(mResultsBitmap, mTempPhotoPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //Detect faces and overlay emoji
         mResultsBitmap = Emojifier.detectFacesAndOverlayEmoji(this, mResultsBitmap);
 
